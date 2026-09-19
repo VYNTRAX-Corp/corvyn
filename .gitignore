@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+.env
+.env.*
+!.env.example
+*.log
+.idea/
+.vscode/
+!.vscode/extensions.json
+!.vscode/tasks.json

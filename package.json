@@ -1,0 +1,22 @@
+{
+  "name": "corvyn",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Corvyn safety reporting platform",
+  "workspaces": [
+    "apps/api",
+    "apps/worker",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @corvyn/api && npm run build --workspace @corvyn/worker",
+    "dev:api": "npm run start:dev --workspace @corvyn/api",
+    "dev:worker": "npm run start:dev --workspace @corvyn/worker",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
