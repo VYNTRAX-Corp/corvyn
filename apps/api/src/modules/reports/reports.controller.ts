@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Post, Query } from '@nestjs/common';
 import { IsLatitude, IsLongitude, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 import { ReportsService } from './reports.service';
 
@@ -19,6 +19,20 @@ class CreateReportDto {
   description!: string;
 }
 
+class ReportBoundsQueryDto {
+  @IsLatitude()
+  minLatitude!: number;
+
+  @IsLatitude()
+  maxLatitude!: number;
+
+  @IsLongitude()
+  minLongitude!: number;
+
+  @IsLongitude()
+  maxLongitude!: number;
+}
+
 @Controller('reports')
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
@@ -35,5 +49,10 @@ export class ReportsController {
   @Get(':id')
   findById(@Param('id') id: string) {
     return this.reportsService.findById(id);
+  }
+
+  @Get()
+  findNearby(@Query() query: ReportBoundsQueryDto) {
+    return this.reportsService.findNearby(query);
   }
 }

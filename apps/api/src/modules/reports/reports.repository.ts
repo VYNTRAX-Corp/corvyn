@@ -1,9 +1,10 @@
 import { Pool } from 'pg';
-import { CreateReportInput, Report, ReportStatus } from './report.types';
+import { CreateReportInput, Report, ReportBounds, ReportStatus } from './report.types';
 
 export interface ReportsRepository {
   create(input: CreateReportInput): Promise<Report>;
   findById(id: string): Promise<Report | undefined>;
+  findNearby(bounds: ReportBounds, limit: number): Promise<Report[]>;
 }
 
 interface ReportRow {
@@ -67,5 +68,27 @@ export class PostgresReportsRepository implements ReportsRepository {
     );
 
     return result.rows[0] ? toReport(result.rows[0]) : undefined;
+  }
+
+  async findNearby(bounds: ReportBounds, limit: number): Promise<Report[]> {
+    const result = await this.pool.query<ReportRow>(
+      `SELECT *
+       FROM reports
+       WHERE status <> $1
+         AND latitude BETWEEN $2 AND $3
+         AND longitude BETWEEN $4 AND $5
+       ORDER BY created_at DESC
+       LIMIT $6`,
+      [
+        'removed',
+        bounds.minLatitude,
+        bounds.maxLatitude,
+        bounds.minLongitude,
+        bounds.maxLongitude,
+        limit,
+      ],
+    );
+
+    return result.rows.map(toReport);
   }
 }

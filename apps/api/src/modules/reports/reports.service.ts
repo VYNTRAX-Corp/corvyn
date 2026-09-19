@@ -1,9 +1,15 @@
-import { Inject, Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { CategoriesService } from '../categories/categories.service';
 import { canSubmitReport } from '../../common/auth/actor-policy';
 import { Actor } from '../../common/auth/actor.types';
-import { CreateReportInput, Report } from './report.types';
+import { CreateReportInput, Report, ReportBounds } from './report.types';
 import { ReportsRepository } from './reports.repository';
 
 const PUBLIC_LOCATION_RADIUS_METERS = 250;
@@ -52,6 +58,19 @@ export class ReportsService {
     }
 
     return report;
+  }
+
+  async findNearby(bounds: ReportBounds): Promise<Report[]> {
+    if (
+      bounds.minLatitude >= bounds.maxLatitude ||
+      bounds.minLongitude >= bounds.maxLongitude ||
+      bounds.maxLatitude - bounds.minLatitude > 2 ||
+      bounds.maxLongitude - bounds.minLongitude > 2
+    ) {
+      throw new BadRequestException('Map bounds are invalid or too large.');
+    }
+
+    return this.reportsRepository.findNearby(bounds, 100);
   }
 
   getPublicLocationRadiusMeters(): number {

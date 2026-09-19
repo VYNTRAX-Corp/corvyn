@@ -7,6 +7,7 @@ import { environmentValidationSchema } from './config/env.validation';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { HealthModule } from './modules/health/health.module';
 import { ReportsModule } from './modules/reports/reports.module';
+import { AnonymousModule } from './modules/anonymous/anonymous.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ReportsModule } from './modules/reports/reports.module';
     CategoriesModule,
     HealthModule,
     ReportsModule,
+    AnonymousModule,
   ],
 })
 export class AppModule {}

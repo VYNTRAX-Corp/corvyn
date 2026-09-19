@@ -13,6 +13,7 @@ describe('ReportsService', () => {
     repository = {
       create: jest.fn(),
       findById: jest.fn(),
+      findNearby: jest.fn(),
     };
     service = new ReportsService(new CategoriesService(), repository);
   });
@@ -75,5 +76,30 @@ describe('ReportsService', () => {
     repository.findById.mockResolvedValue(report);
 
     await expect(service.findById('report-1')).resolves.toBe(report);
+  });
+
+  it('returns nearby reports using the repository bounds', async () => {
+    repository.findNearby.mockResolvedValue([]);
+    const bounds = {
+      minLatitude: 54.6,
+      maxLatitude: 54.7,
+      minLongitude: 25.2,
+      maxLongitude: 25.3,
+    };
+
+    await expect(service.findNearby(bounds)).resolves.toEqual([]);
+    expect(repository.findNearby).toHaveBeenCalledWith(bounds, 100);
+  });
+
+  it('rejects an oversized map viewport', async () => {
+    await expect(
+      service.findNearby({
+        minLatitude: 0,
+        maxLatitude: 3,
+        minLongitude: 25,
+        maxLongitude: 26,
+      }),
+    ).rejects.toThrow('Map bounds are invalid or too large.');
+    expect(repository.findNearby).not.toHaveBeenCalled();
   });
 });

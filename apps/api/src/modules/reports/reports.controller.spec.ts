@@ -31,9 +31,29 @@ describe('ReportsController', () => {
       create: jest.fn(),
       createAnonymousActor: jest.fn(),
       findById: jest.fn().mockResolvedValue({ id: 'report-1' }),
+      findNearby: jest.fn().mockResolvedValue([]),
     } as unknown as ReportsService;
     const controller = new ReportsController(service);
 
     await expect(controller.findById('report-1')).resolves.toEqual({ id: 'report-1' });
+  });
+
+  it('requests nearby reports for a map viewport', async () => {
+    const service = {
+      create: jest.fn(),
+      createAnonymousActor: jest.fn(),
+      findById: jest.fn(),
+      findNearby: jest.fn().mockResolvedValue([]),
+    } as unknown as ReportsService;
+    const controller = new ReportsController(service);
+    const bounds = {
+      minLatitude: 54.6,
+      maxLatitude: 54.7,
+      minLongitude: 25.2,
+      maxLongitude: 25.3,
+    };
+
+    await expect(controller.findNearby(bounds)).resolves.toEqual([]);
+    expect(service.findNearby).toHaveBeenCalledWith(bounds);
   });
 });
