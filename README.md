@@ -39,6 +39,13 @@ Lithuania-first MVP.
    GET http://localhost:3000/v1/categories
    ```
 
+6. Request an anonymous session and query reports for a map viewport:
+
+   ```powershell
+   Invoke-RestMethod -Method Post http://localhost:3000/v1/anonymous/session
+   Invoke-RestMethod "http://localhost:3000/v1/reports?minLatitude=54.6&maxLatitude=54.8&minLongitude=25.1&maxLongitude=25.4"
+   ```
+
 The API validates required environment variables during startup. Do not commit
 `.env` or production secrets.
 

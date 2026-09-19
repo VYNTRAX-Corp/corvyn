@@ -24,3 +24,10 @@ export interface CreateReportInput {
   description: string;
   authorType: 'anonymous' | 'user';
 }
+
+export interface ReportBounds {
+  minLatitude: number;
+  maxLatitude: number;
+  minLongitude: number;
+  maxLongitude: number;
+}
